@@ -1,0 +1,31 @@
+<div class="row m-0">
+  <div class="col cell font-weight-bold">Sun</div>
+  <div class="col cell font-weight-bold">Mon</div>
+  <div class="col cell font-weight-bold">Tue</div>
+  <div class="col cell font-weight-bold">Wed</div>
+  <div class="col cell font-weight-bold">Thu</div>
+  <div class="col cell font-weight-bold">Fri</div>
+  <div class="col cell font-weight-bold">Sat</div>
+</div>
+<div class="row days m-0" *ngFor="let week of weeks; let i = index">
+  <div
+    class="col cell day"
+    *ngFor="let day of week"
+    [ngClass]="{
+      'col cell': true,
+      reserved: day.reserved,
+      'not-included': !day.included,
+      'last-row': i === weeks.length - 1
+    }"
+    (click)="day.included && daySelected.emit(day)"
+  >
+    {{ day.date }}
+    <div *ngIf="day.reserved" class="tennant mt-3">
+      {{ day.tennantName }}
+    </div>
+  </div>
+</div>
+<div class="row m-0">
+  <div class="box reserved"></div>
+  &nbsp;= Reserved Dates
+</div>

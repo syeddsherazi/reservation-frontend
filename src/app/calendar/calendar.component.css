@@ -1,0 +1,62 @@
+.cell {
+  padding: 0.5rem;
+  width: 14.28%;
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+}
+
+.days {
+  height: 7rem;
+}
+
+.day {
+  border-color: #dee2e6;
+  border-style: solid;
+  border-width: 1px 1px 0px 0px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+
+.days .cell:first-child {
+  border-left-width: 1px;
+}
+
+.last-row {
+  border-bottom-width: 1px;
+}
+
+.reserved {
+  background: rgba(0, 151, 19, 0.6);
+}
+
+.box {
+  float: left;
+  height: 20px;
+  width: 20px;
+  margin-bottom: 15px;
+  border: 1px solid black;
+  clear: both;
+}
+
+.not-included {
+  background: rgba(0, 0, 0, 0.2);
+  cursor: not-allowed;
+}
+
+.tennant {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 1204px) {
+  .tennant {
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 360px) {
+  .tennant {
+    font-size: 12px;
+  }
+}

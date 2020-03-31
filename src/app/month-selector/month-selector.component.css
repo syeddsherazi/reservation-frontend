@@ -1,0 +1,37 @@
+.month-selector {
+  text-align: center;
+  padding: 1rem;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
+  border: none;
+  background: none;
+  font-size: 25px;
+  padding: 0px 3px 0px 3px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.arrow-right {
+  width: 0;
+  height: 0;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 20px solid black;
+  margin-right: auto;
+}
+
+.arrow-left {
+  width: 0;
+  height: 0;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right: 20px solid black;
+  margin-left: auto;
+}

@@ -1,0 +1,37 @@
+<div class="row month-selector">
+  <div
+    class="col-2 col-sm-2 col-md-3 col-lg-3 pointer"
+    (click)="previous.emit()"
+  >
+    <div class="arrow-left"></div>
+  </div>
+  <div class="col-8 col-sm-8 col-md-6 col-lg-6">
+    <select
+      id="months"
+      class="pointer"
+      (change)="onMonthChange.emit($event.target.value * 1)"
+    >
+      <option
+        *ngFor="let month of months; let i = index"
+        [value]="i"
+        [selected]="i === currMonth"
+        >{{ month }}</option
+      >
+    </select>
+    <select
+      id="years"
+      class="pointer"
+      (change)="onYearChange.emit($event.target.value * 1)"
+    >
+      <option
+        *ngFor="let year of years; let i = index"
+        [value]="year"
+        [selected]="year === currYear"
+        >{{ year }}</option
+      >
+    </select>
+  </div>
+  <div class="col-2 col-sm-2 col-md-3 col-lg-3 pointer" (click)="next.emit()">
+    <div class="arrow-right"></div>
+  </div>
+</div>

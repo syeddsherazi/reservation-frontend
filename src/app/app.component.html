@@ -1,0 +1,73 @@
+<div class="container-fluid">
+  <div class="loading" *ngIf="isLoadingServerTime || isLoading"></div>
+  <div class="row" *ngIf="!isLoadingServerTime">
+    <div class="col-sm-12 col-md-12 col-lg-8">
+      <div class="col-sm-12 col-md-12 col-lg-12">
+        <app-month-selector
+          [months]="months"
+          [currMonth]="currMonth"
+          [years]="years"
+          [currYear]="currYear"
+          (next)="next($event)"
+          (previous)="previous($event)"
+          (onMonthChange)="onMonthChange($event)"
+          (onYearChange)="onYearChange($event)"
+        ></app-month-selector>
+      </div>
+      <app-calendar
+        [currMonth]="currMonth"
+        [currYear]="currYear"
+        (daySelected)="daySelected($event)"
+        [reservations]="reservations"
+      ></app-calendar>
+      <button
+        *ngIf="selectedDate"
+        class="reservation-button reserve"
+        [ngClass]="{
+          'reservation-button': true,
+          reserve: !selectedDate.reserved,
+          cancel: selectedDate.reserved
+        }"
+      >
+        Reserve
+      </button>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-4">
+      <div class="row month-selector">
+        <h3 id="monthAndYear" class="reservations-header mt-4">
+          Reservations
+        </h3>
+      </div>
+      <table class="table table-bordered reservation-table mt-3">
+        <th>
+          Date
+        </th>
+        <th>
+          Tennant
+        </th>
+        <th>Cancel</th>
+        <tbody>
+          <tr *ngFor="let reservation of reservations">
+            <td>
+              {{ getDateToDisplay(reservation.time) }}
+            </td>
+            <td>
+              {{
+                reservation.tennantName.length > 17
+                  ? (reservation.tennantName | slice: 0:17) + '..'
+                  : reservation.tennantName
+              }}
+            </td>
+            <td><button class="reservation-button cancel">Cancel</button></td>
+          </tr>
+          <tr *ngIf="!reservations.length">
+            <td colspan="3">
+              No Reservations for {{ months[currMonth] }} {{ currYear }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
