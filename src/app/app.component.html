@@ -59,7 +59,16 @@
                   : reservation.tennantName
               }}
             </td>
-            <td><button class="reservation-button cancel">Cancel</button></td>
+            <td>
+              <button
+                class="reservation-button cancel"
+                (click)="
+                  cancelReservation(reservation.time, reservation.tennantName)
+                "
+              >
+                Cancel
+              </button>
+            </td>
           </tr>
           <tr *ngIf="!reservations.length">
             <td colspan="3">

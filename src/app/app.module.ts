@@ -12,15 +12,17 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { MonthSelectorComponent } from './month-selector/month-selector.component';
 import { ApiService } from './services'; // our custom service, see below
 import { MakeReservationComponent } from './make-reservation/make-reservation.component';
+import { CancelReservationComponent } from './cancel-reservation/cancel-reservation.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CalendarComponent,
     MonthSelectorComponent,
-    MakeReservationComponent
+    MakeReservationComponent,
+    CancelReservationComponent
   ],
-  entryComponents: [MakeReservationComponent],
+  entryComponents: [MakeReservationComponent, CancelReservationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

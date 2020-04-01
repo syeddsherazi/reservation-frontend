@@ -1,2 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.reservation-button {
+  width: 100%;
+  font-size: 18px;
+  padding: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.reservation-button.reserve {
+  background: green;
+  border: 1px solid green;
+}
+
+.reservation-button.cancel {
+  background: red;
+  border: 1px solid red;
+}
+
+.reservation-button:disabled {
+  cursor: not-allowed;
+  background-color: #cccccc;
+  border: 1px solid #cccccc;
+  color: #666666;
+}
+
+.header {
+  justify-content: flex-end;
+}
+
+.cancel {
+  cursor: pointer;
+}

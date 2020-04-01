@@ -111,6 +111,7 @@ export class CalendarComponent implements OnChanges {
               // IF DAY INCLUDED IN CURRENT MONTH, AND RESERVATION IS OF SAME DAY, RESERVE IT
               day.reserved = true;
               day.tennantName = reservation.tennantName;
+              day.unix = reservation.time;
               // console.log(
               //   moment.unix(day.unix).toDate(),
               //   ' and ',

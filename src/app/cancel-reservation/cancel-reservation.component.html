@@ -1,0 +1,16 @@
+<div class="row header">
+  <i class="fa fa-2x fa-close cancel" (click)="dialogRef.close()"></i>
+</div>
+<div class="form-group row">
+  <label for="colFormLabelLg" class="col-sm-12 col-form-label col-form-label-lg"
+    >Tenant Name: {{ data.tennantName }}</label
+  >
+</div>
+<div class="form-group row">
+  <label for="colFormLabelLg" class="col-sm-12 col-form-label col-form-label-lg"
+    >Stay Date: {{ data.dateString }}</label
+  >
+</div>
+<button class="reservation-button cancel" (click)="dialogRef.close(true)">
+  Cancel Reservation
+</button>

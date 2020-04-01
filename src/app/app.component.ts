@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './services';
 import { MakeReservationComponent } from './make-reservation';
+import { CancelReservationComponent } from './cancel-reservation';
 import * as moment from 'moment';
 import * as momentTimeZone from 'moment-timezone';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -105,14 +106,17 @@ export class AppComponent implements OnInit {
   }
 
   daySelected(day) {
+    console.log('received day', day);
     // CONVERT DATE INTO SERVER TIMEZONE
     let tempDate = momentTimeZone
       .tz([this.currYear, this.currMonth, day.date], this.serverTimeZone)
       .endOf('day');
 
     // IF ALREADY RESERVED CANCEL RESERVATION, ELSE MAKE ONE
-    if (day.reserved || !day.reserved) {
+    if (!day.reserved) {
       this.makeReservation(tempDate.unix(), tempDate.format('ddd, Do MMMM'));
+    } else {
+      this.cancelReservation(day.unix, day.tennantName);
     }
   }
 
@@ -172,6 +176,62 @@ export class AppComponent implements OnInit {
               this.getReservations();
             },
             err => {
+              this.getReservations();
+              if (err.error) {
+                this.notificationsService.error(err.error, '', {
+                  timeOut: 3000,
+                  showProgressBar: true,
+                  clickToClose: true
+                });
+              } else {
+                this.notificationsService.error('Something bad occured', '', {
+                  timeOut: 3000,
+                  showProgressBar: true,
+                  clickToClose: true
+                });
+              }
+            }
+          );
+      }
+    });
+  }
+
+  cancelReservation(unixDate, tennantName) {
+    // CANCEL RESERVATION, CALLING DIALOG COMPONENT
+    let dateString = moment.unix(unixDate).format('Do, ddd');
+    let dialogRef = this.dialog.open(CancelReservationComponent, {
+      data: {
+        dateString,
+        tennantName
+      },
+      width: '700px'
+    });
+    console.log(1);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('yes cancel');
+        this.isLoading = true;
+        this._apiService
+          .modifyReservation({
+            tennantName: result,
+            time: unixDate,
+            reserved: false
+          })
+          .subscribe(
+            data => {
+              this.notificationsService.success(
+                'Reservation Cancelled Successfully',
+                '',
+                {
+                  timeOut: 3000,
+                  showProgressBar: true,
+                  clickToClose: true
+                }
+              );
+              this.getReservations();
+            },
+            err => {
+              this.getReservations();
               if (err.error) {
                 this.notificationsService.error(err.error, '', {
                   timeOut: 3000,
