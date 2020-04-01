@@ -239,5 +239,5 @@ Implemented features include:
  
 Some nice to haves:
  - Reservations list showing all reservations of selected month.
- - Tennant name on day in calendar. ( But since the day cell has to quite small in size, so it isn't necessary that entire name of tennant will be adjusted in it )
+ - Tennant name on day in calendar. ( But since the day cell has to be quite small in size, so it isn't necessary that entire name of tennant will be adjusted in it )
 
