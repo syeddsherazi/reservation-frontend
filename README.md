@@ -228,7 +228,7 @@ app.listen(port);
 Details of Front End Assignment Solution
 ---------------
 
-Since the application was quite small, so kept the architecture to minimal e.g. didn't need any separate hierarchy for utils, services etc.
+Since the application was quite small, so kept the architecture to minimal e.g. didn't need any separate hierarchy for utils, pipes etc.
 
 Implemented features include:
  - Calendar UI.
