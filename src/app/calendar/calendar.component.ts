@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnChanges } from '@angular/core';
 import { Input } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
@@ -8,22 +8,21 @@ import * as moment from 'moment';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements OnInit {
-  @Input() currMonth;
-  @Input() currYear;
-  @Input() reservations;
-  @Output() daySelected: EventEmitter<any> = new EventEmitter();
+export class CalendarComponent implements OnChanges {
+  @Input() currMonth; // SELECTED MONTH
+  @Input() currYear; // SELECTED YEAR
+  @Input() reservations; // RESERVATIONS LIST
+  @Output() daySelected: EventEmitter<any> = new EventEmitter(); // EMIT ON CELL CLICK
   weeks = [];
 
   constructor() {}
-
-  ngOnInit() {}
 
   ngOnChanges() {
     this.generateCalendar(this.currYear, this.currMonth);
   }
 
   getPreviousDates() {
+    // GET DATES OF PREV MONTH TO DISPLAY
     return (
       32 -
       new Date(
@@ -33,25 +32,28 @@ export class CalendarComponent implements OnInit {
       ).getDate()
     );
   }
-  // check how many days in a month code from https://dzone.com/articles/determining-number-days-month
+
   daysInMonth(iMonth, iYear) {
+    // CHECK NO OF DAYS IN MONTH
     return 32 - new Date(iYear, iMonth, 32).getDate();
   }
 
   generateCalendar(year, month) {
-    this.weeks = [];
-    let prevDates = this.getPreviousDates();
+    // GENERATE CALENDAR
 
+    this.weeks = [];
+    let prevDates = this.getPreviousDates(); // GET PREV MONTH DATES TO DISPLAY
     let firstDay = new Date(year, month).getDay();
-    console.log('first day is ', firstDay);
-    // creating all cells
     let date = 1;
+
+    // CAN HAVE MAX OF 6 ROWS FOR WEEKS
     for (let i = 0; i < 6; i++) {
       let row = [];
 
-      //creating individual cells, filing them up with data.
+      // CREATE INDIVIDUAL DATES
       for (let j = 0; j < 7; j++) {
         if (i === 0 && j < firstDay) {
+          // IF DATES OF PREV MONTH
           row.push({
             date: prevDates - (firstDay - 1),
             reserved: false,
@@ -59,8 +61,10 @@ export class CalendarComponent implements OnInit {
           });
           prevDates++;
         } else if (date > this.daysInMonth(month, year)) {
+          // IF EXCEED NO OF DAYS WITHIN MONTH
           break;
         } else {
+          // PUSH DATES OF MONTH
           row.push({
             date,
             reserved: false,
@@ -71,15 +75,18 @@ export class CalendarComponent implements OnInit {
         }
       }
 
+      // PUSH ENTIRE WEEK IN 2D ARRAY
       this.weeks.push(row);
     }
 
     if (!this.weeks[this.weeks.length - 1].length) {
+      // IF LAST WEEK I.E. WEEK 6 HAS NO DATE, THEN POP ARRAY
       this.weeks.pop();
     }
 
     let remainingDays = 0;
     while (this.weeks[this.weeks.length - 1].length < 7) {
+      // PUSH ANY REMAINING DAYS OF NEXT MONTH FOR DISPLAY PURPOSE ONLY
       remainingDays++;
       this.weeks[this.weeks.length - 1].push({
         date: remainingDays,
@@ -87,6 +94,8 @@ export class CalendarComponent implements OnInit {
         included: false
       });
     }
+
+    // SET RESERVED CELLS BASED UPON RECIEVED ARRAY
     this.setReservations();
   }
 
@@ -99,19 +108,19 @@ export class CalendarComponent implements OnInit {
               day.included &&
               moment.unix(day.unix).isSame(moment.unix(reservation.time), 'day')
             ) {
+              // IF DAY INCLUDED IN CURRENT MONTH, AND RESERVATION IS OF SAME DAY, RESERVE IT
               day.reserved = true;
               day.tennantName = reservation.tennantName;
-              console.log(
-                moment.unix(day.unix).toDate(),
-                ' and ',
-                moment.unix(reservation.time).toDate(),
-                'are on same day',
-                moment
-                  .unix(day.unix)
-                  .isSame(moment.unix(reservation.time), 'day')
-              );
+              // console.log(
+              //   moment.unix(day.unix).toDate(),
+              //   ' and ',
+              //   moment.unix(reservation.time).toDate(),
+              //   'are on same day',
+              //   moment
+              //     .unix(day.unix)
+              //     .isSame(moment.unix(reservation.time), 'day')
+              // );
             }
-            moment.unix(day.unix).isSame(moment.unix(reservation.time), 'day');
           }
         }
       }

@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from './services';
+import { MakeReservationComponent } from './make-reservation';
 import * as moment from 'moment';
 import * as momentTimeZone from 'moment-timezone';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +15,7 @@ export class AppComponent implements OnInit {
   currMonth;
   currYear;
   months = [
+    // MOVE TO CONSTS
     'Jan',
     'Feb',
     'Mar',
@@ -27,43 +31,47 @@ export class AppComponent implements OnInit {
   ];
   years = [];
   selectedDate;
-  myTime = new Date();
+  serverTime; // SERVER TIME, FOR GENERATING CALENDAR
+  serverTimeZone; // SERVER TIMEZONE , NEEDED TO SEND TIMESTAMP WHILE RESERVATION
   reservations = [];
-  isLoading = false;
-  isLoadingServerTime = true;
+  isLoading = false; // FOR API HITS IN PROGRESS
+  isLoadingServerTime = true; // FOR LOADING SERVER TIME
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private _apiService: ApiService,
+    public dialog: MatDialog,
+    public notificationsService: NotificationsService
+  ) {}
 
   ngOnInit() {
     this.generateYears();
     this.getServerTime();
-    console.log('my timezone is ', momentTimeZone.tz.guess());
   }
 
   getServerTime() {
-    this.apiService.getServerTime().subscribe(
+    this._apiService.getServerTime().subscribe(
       data => {
-        // console.log(
-        //   'time is ',
-        //   data,
-        //   'my time is ',
-        //   Math.floor(this.myTime.getTime() / 1000),
-        //   this.myTime
-        // );
-        this.myTime = new Date(data.time);
+        // GENERATE CLIENT CALENDAR BASED ON SERVER TIME
+        // NO NEED TO GENERATE IN SAME TIMEZONE, AS TIMEZONE CONVERTED WHILE POST REQUESTS
+        this.serverTime = new Date(data.time);
+        this.serverTimeZone = data.timeZone;
         this.isLoadingServerTime = false;
-        console.log('client time now is ', new Date(data.time));
-        this.currMonth = this.myTime.getMonth();
-        this.currYear = this.myTime.getFullYear();
-        console.log('client month and year is ', this.currMonth, this.currYear);
+        this.currMonth = this.serverTime.getMonth();
+        this.currYear = this.serverTime.getFullYear();
         this.getReservations();
       },
-      err => console.error(err),
-      () => console.log('done loading foods')
+      err => {
+        this.notificationsService.error('Something bad occured', '', {
+          timeOut: 3000,
+          showProgressBar: true,
+          clickToClose: true
+        });
+      }
     );
   }
 
   generateYears() {
+    // CURRENTLY GENERATING CALENDAR FOR ONLY 40 YEARS i.e. +-20 CURRENT YEAR
     this.currYear = new Date().getFullYear();
     for (let i = this.currYear - 20; i <= this.currYear + 20; i++) {
       this.years.push(i);
@@ -71,62 +79,115 @@ export class AppComponent implements OnInit {
   }
 
   next() {
+    // GET NEXT MONTH
     this.currYear = this.currMonth === 11 ? this.currYear + 1 : this.currYear;
     this.currMonth = (this.currMonth + 1) % 12;
     this.getReservations();
   }
 
   previous() {
+    // GET PREV MONTH
     this.currYear = this.currMonth === 0 ? this.currYear - 1 : this.currYear;
     this.currMonth = this.currMonth === 0 ? 11 : this.currMonth - 1;
     this.getReservations();
   }
 
   onMonthChange(newMonth) {
+    // ON MONTH CHANGE FROM DROPDOWN
     this.currMonth = newMonth;
-    console.log('new month is ', newMonth);
     this.getReservations();
   }
 
   onYearChange(newYear) {
+    // ON YEAR CHANGE FROM DROPDOWN
     this.currYear = newYear;
-    console.log('new year is ', newYear);
     this.getReservations();
   }
 
   daySelected(day) {
-    console.log('day selected', day, this.currYear, this.currMonth);
-    var d = new Date(this.currYear, this.currMonth, day.date);
-    console.log('selected day will be', d);
-    var unixTimeStamp = Math.floor(d.getTime() / 1000);
-    console.log('unix timestamp is ', unixTimeStamp);
+    // CONVERT DATE INTO SERVER TIMEZONE
+    let tempDate = momentTimeZone
+      .tz([this.currYear, this.currMonth, day.date], this.serverTimeZone)
+      .endOf('day');
+
+    // IF ALREADY RESERVED CANCEL RESERVATION, ELSE MAKE ONE
+    if (day.reserved || !day.reserved) {
+      this.makeReservation(tempDate.unix(), tempDate.format('ddd, Do MMMM'));
+    }
   }
 
   getReservations() {
+    // GET RESERVATIONS FOR MONTH
     let tempDate = new Date(this.currYear, this.currMonth, 1);
     let startTime = moment(tempDate);
     let endTime = startTime.clone().endOf('month');
-    console.log(
-      'start time is ',
-      startTime.toDate(),
-      'end time is ',
-      endTime.toDate()
-    );
+
     this.isLoading = true;
-    this.apiService.getReservations(startTime.unix(), endTime.unix()).subscribe(
-      data => {
-        this.reservations = data['reserved'];
-        console.log('reservations are ', data);
-      },
-      err => console.error(err),
-      () => {
-        console.log('done loading foods');
-        this.isLoading = false;
-      }
-    );
+    this._apiService
+      .getReservations(startTime.unix(), endTime.unix())
+      .subscribe(
+        data => {
+          this.reservations = data['reserved'];
+          this.isLoading = false;
+        },
+        err => {
+          this.notificationsService.error('Something bad occured', '', {
+            timeOut: 3000,
+            showProgressBar: true,
+            clickToClose: true
+          });
+          this.isLoading = false;
+        }
+      );
   }
 
   getDateToDisplay(unix) {
     return moment.unix(unix).format('Do, ddd');
+  }
+
+  makeReservation(unixDate, dateString) {
+    // MAKE RESERVATION, CALLING DIALOG COMPONENT
+    let dialogRef = this.dialog.open(MakeReservationComponent, {
+      data: {
+        dateString
+      },
+      width: '700px'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.isLoading = true;
+        this._apiService
+          .modifyReservation({
+            tennantName: result,
+            time: unixDate,
+            reserved: true
+          })
+          .subscribe(
+            data => {
+              this.notificationsService.success('Reservation successsful', '', {
+                timeOut: 3000,
+                showProgressBar: true,
+                clickToClose: true
+              });
+              this.getReservations();
+            },
+            err => {
+              if (err.error) {
+                this.notificationsService.error(err.error, '', {
+                  timeOut: 3000,
+                  showProgressBar: true,
+                  clickToClose: true
+                });
+              } else {
+                this.notificationsService.error('Something bad occured', '', {
+                  timeOut: 3000,
+                  showProgressBar: true,
+                  clickToClose: true
+                });
+              }
+            }
+          );
+      }
+    });
   }
 }
