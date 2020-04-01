@@ -112,15 +112,6 @@ export class CalendarComponent implements OnChanges {
               day.reserved = true;
               day.tennantName = reservation.tennantName;
               day.unix = reservation.time;
-              // console.log(
-              //   moment.unix(day.unix).toDate(),
-              //   ' and ',
-              //   moment.unix(reservation.time).toDate(),
-              //   'are on same day',
-              //   moment
-              //     .unix(day.unix)
-              //     .isSame(moment.unix(reservation.time), 'day')
-              // );
             }
           }
         }

@@ -3,6 +3,7 @@
   <div class="loading" *ngIf="isLoadingServerTime || isLoading"></div>
   <div class="row" *ngIf="!isLoadingServerTime">
     <div class="col-sm-12 col-md-12 col-lg-8">
+      <h1>Current Date: {{ serverTime.toDateString() }}</h1>
       <div class="col-sm-12 col-md-12 col-lg-12">
         <app-month-selector
           [months]="months"
@@ -33,7 +34,7 @@
         Reserve
       </button>
     </div>
-    <div class="col-sm-12 col-md-12 col-lg-4">
+    <div class="col-sm-12 col-md-12 col-lg-4 mt-5">
       <app-reservations-list
         [reservations]="reservations"
         [months]="months"

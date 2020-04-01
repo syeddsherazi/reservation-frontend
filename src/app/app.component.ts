@@ -98,7 +98,6 @@ export class AppComponent implements OnInit {
   }
 
   daySelected(day) {
-    console.log('received day', day);
     // CONVERT DATE INTO SERVER TIMEZONE
     let tempDate = momentTimeZone
       .tz([this.currYear, this.currMonth, day.date], this.serverTimeZone)
@@ -200,10 +199,8 @@ export class AppComponent implements OnInit {
       },
       width: '700px'
     });
-    console.log(1);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('yes cancel');
         this.isLoading = true;
         this._apiService
           .modifyReservation({
