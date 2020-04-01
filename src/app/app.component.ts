@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from './services';
 import { MakeReservationComponent } from './make-reservation';
 import { CancelReservationComponent } from './cancel-reservation';
+import { MONTHS_LIST } from './constants';
 import * as moment from 'moment';
 import * as momentTimeZone from 'moment-timezone';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,21 +16,7 @@ import { NotificationsService } from 'angular2-notifications';
 export class AppComponent implements OnInit {
   currMonth;
   currYear;
-  months = [
-    // MOVE TO CONSTS
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
+  months = MONTHS_LIST;
   years = [];
   selectedDate;
   serverTime; // SERVER TIME, FOR GENERATING CALENDAR
@@ -105,6 +92,11 @@ export class AppComponent implements OnInit {
     this.getReservations();
   }
 
+  onListCancel(item) {
+    // ON CANCEL CALL FROM RESERVATION LIST
+    this.cancelReservation(item.time, item.tennantName);
+  }
+
   daySelected(day) {
     console.log('received day', day);
     // CONVERT DATE INTO SERVER TIMEZONE
@@ -132,6 +124,12 @@ export class AppComponent implements OnInit {
       .subscribe(
         data => {
           this.reservations = data['reserved'];
+
+          // SORTING TO SHOW ORDERED LIST IN RESERVATIONS LIST SECTION
+          this.reservations = this.reservations.sort(function(x, y) {
+            return x.time - y.time;
+          });
+
           this.isLoading = false;
         },
         err => {
@@ -143,10 +141,6 @@ export class AppComponent implements OnInit {
           this.isLoading = false;
         }
       );
-  }
-
-  getDateToDisplay(unix) {
-    return moment.unix(unix).format('Do, ddd');
   }
 
   makeReservation(unixDate, dateString) {

@@ -1,9 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import {
-  MatDialog,
-  MAT_DIALOG_DATA,
-  MatDialogRef
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-cancel-reservation',
@@ -12,6 +8,7 @@ import {
 })
 export class CancelReservationComponent {
   constructor(
+    // DATA CONTAINS TENNANT NAME AND DATE STRING TO DISPLAY
     @Inject(MAT_DIALOG_DATA) public data,
     public dialogRef: MatDialogRef<CancelReservationComponent>
   ) {}

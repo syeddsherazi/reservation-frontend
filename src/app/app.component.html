@@ -34,49 +34,11 @@
       </button>
     </div>
     <div class="col-sm-12 col-md-12 col-lg-4">
-      <div class="row month-selector">
-        <h3 id="monthAndYear" class="reservations-header mt-4">
-          Reservations
-        </h3>
-      </div>
-      <table class="table table-bordered reservation-table mt-3">
-        <th>
-          Date
-        </th>
-        <th>
-          Tennant
-        </th>
-        <th>Cancel</th>
-        <tbody>
-          <tr *ngFor="let reservation of reservations">
-            <td>
-              {{ getDateToDisplay(reservation.time) }}
-            </td>
-            <td>
-              {{
-                reservation.tennantName.length > 17
-                  ? (reservation.tennantName | slice: 0:17) + '..'
-                  : reservation.tennantName
-              }}
-            </td>
-            <td>
-              <button
-                class="reservation-button cancel"
-                (click)="
-                  cancelReservation(reservation.time, reservation.tennantName)
-                "
-              >
-                Cancel
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="!reservations.length">
-            <td colspan="3">
-              No Reservations for {{ months[currMonth] }} {{ currYear }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <app-reservations-list
+        [reservations]="reservations"
+        [months]="months"
+        (cancelReservation)="onListCancel($event)"
+      ></app-reservations-list>
     </div>
   </div>
 </div>

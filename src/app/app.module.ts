@@ -13,6 +13,7 @@ import { MonthSelectorComponent } from './month-selector/month-selector.componen
 import { ApiService } from './services'; // our custom service, see below
 import { MakeReservationComponent } from './make-reservation/make-reservation.component';
 import { CancelReservationComponent } from './cancel-reservation/cancel-reservation.component';
+import { ReservationsListComponent } from './reservations-list/reservations-list.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CancelReservationComponent } from './cancel-reservation/cancel-reservat
     CalendarComponent,
     MonthSelectorComponent,
     MakeReservationComponent,
-    CancelReservationComponent
+    CancelReservationComponent,
+    ReservationsListComponent
   ],
   entryComponents: [MakeReservationComponent, CancelReservationComponent],
   imports: [
