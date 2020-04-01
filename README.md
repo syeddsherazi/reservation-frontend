@@ -55,7 +55,7 @@ Accept: application/json
 
 > Response
 {
-	"time": "2020-04-01 06:06"
+  "time": "2020-04-01 06:06",
   "timeZone": "Asia/Dubai"
 }
 ```
