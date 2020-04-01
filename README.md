@@ -25,6 +25,8 @@ Now run the project using following command:
 ng serve
 ```
 
+The front end will serve on http://localhost:4200
+
 
 Changes made on Backend Node
 -----------
