@@ -2,26 +2,6 @@
   margin: auto;
 }
 
-.reservation-button {
-  width: 100%;
-  font-size: 18px;
-  padding: 5px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 2px;
-}
-
-.reservation-button.cancel {
-  background: red;
-  border: 1px solid red;
-}
-
-.reservation-button.reserve {
-  background: green;
-  border: 1px solid green;
-}
-
 /* Absolute Center Spinner */
 .loading {
   position: fixed;
